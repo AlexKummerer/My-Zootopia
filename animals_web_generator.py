@@ -19,6 +19,25 @@ def write_html(file_path, content):
         file.write(content)
 
 
+def get_available_skin_types(animals_data):
+    """Get list of available skin types"""
+    skin_types = set()
+    for animal in animals_data:
+        if "characteristics" in animal and "skin_type" in animal["characteristics"]:
+            skin_types.add(animal["characteristics"]["skin_type"])
+    return list(skin_types)
+
+
+def filter_animals_by_skin_type(animals_data, skin_type):
+    """Filter animals by skin type"""
+    return [
+        animal
+        for animal in animals_data
+        if "characteristics" in animal
+        and animal["characteristics"].get("skin_type") == skin_type
+    ]
+
+
 def generate_animal_information(animal):
     """Generate animal information string"""
     info = ""
@@ -26,7 +45,7 @@ def generate_animal_information(animal):
     if "name" in animal:
         info += f"<div class='card__title'> {animal['name']}</div>\n"
     info += '<p class="card__text">'
-    info += '<ul>'
+    info += "<ul>"
     if "locations" in animal and animal["locations"]:
         info += f" <li> <strong> Location: </strong> {animal['locations'][0]}</li>\n"
     if "characteristics" in animal:
@@ -34,12 +53,13 @@ def generate_animal_information(animal):
         if "diet" in characteristics:
             info += f" <li>  <strong> Diet: </strong> {characteristics['diet']}</li>\n"
         if "type" in characteristics:
-            info += f" <li>  <strong>  Type: </strong>  {characteristics['type']}</li>\n"
+            info += (
+                f" <li>  <strong>  Type: </strong>  {characteristics['type']}</li>\n"
+            )
 
-  
-    info += '</ul>'
-    info+= "</p>"
-    info += '</li>'
+    info += "</ul>"
+    info += "</p>"
+    info += "</li>"
     return info
 
 
@@ -58,9 +78,17 @@ def replace_placeholder(template_content, placeholder, replacement):
 
 def main():
     animals_data = load_data("animals_data.json")
+
+    available_skin_types = get_available_skin_types(animals_data)
+    print("Available skin types:")
+    for skin_type in available_skin_types:
+        print(skin_type)
+    selected_skin_type = input("\nEnter a skin type from the options above: ")
+    filtered_animals = filter_animals_by_skin_type(animals_data, selected_skin_type)
+
     template_content = read_template("animals_template.html")
 
-    animals_info_string = generate_animals_data_string(animals_data)
+    animals_info_string = generate_animals_data_string(filtered_animals)
     updated_content = replace_placeholder(
         template_content, "__REPLACE_ANIMALS_INFO__", animals_info_string
     )
