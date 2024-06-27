@@ -26,20 +26,19 @@ def generate_animal_information(animal):
     if "name" in animal:
         info += f"<div class='card__title'> {animal['name']}</div>\n"
     info += '<p class="card__text">'
-    
+    info += '<ul>'
     if "locations" in animal and animal["locations"]:
-        info += f"  <strong> Location: </strong> {animal['locations'][0]}<br/>\n"
+        info += f" <li> <strong> Location: </strong> {animal['locations'][0]}</li>\n"
     if "characteristics" in animal:
         characteristics = animal["characteristics"]
         if "diet" in characteristics:
-            info += f" <strong> Diet: </strong> {characteristics['diet']}<br/>\n"
+            info += f" <li>  <strong> Diet: </strong> {characteristics['diet']}</li>\n"
         if "type" in characteristics:
-            info += f" <strong>  Type: </strong>  {characteristics['type']}<br/>\n"
+            info += f" <li>  <strong>  Type: </strong>  {characteristics['type']}</li>\n"
 
   
-
+    info += '</ul>'
     info+= "</p>"
-    info += "\n"
     info += '</li>'
     return info
 
