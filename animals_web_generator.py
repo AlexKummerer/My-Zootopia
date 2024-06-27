@@ -22,20 +22,22 @@ def write_html(file_path, content):
 def generate_animal_information(animal):
     """Generate animal information string"""
     info = ""
+    info += '<li class="cards__item">'
     if "name" in animal:
-        info += f"Name: {animal['name']}\n"
+        info += f"Name: {animal['name']}<br/>\n"
 
     if "characteristics" in animal:
         characteristics = animal["characteristics"]
         if "diet" in characteristics:
-            info += f"Diet: {characteristics['diet']}\n"
+            info += f"Diet: {characteristics['diet']}<br/>\n"
         if "type" in characteristics:
-            info += f"Type: {characteristics['type']}\n"
+            info += f"Type: {characteristics['type']}<br/>\n"
 
     if "locations" in animal and animal["locations"]:
-        info += f"Location: {animal['locations'][0]}\n"
+        info += f"Location: {animal['locations'][0]}<br/>\n"
 
     info += "\n"
+    info += '</li>'
     return info
 
 
