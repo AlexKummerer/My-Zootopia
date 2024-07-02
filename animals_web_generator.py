@@ -1,10 +1,16 @@
 import json
+import requests
 
 
-def load_data(file_path):
-    """Loads a JSON file"""
-    with open(file_path, "r") as handle:
-        return json.load(handle)
+def load_data(name):
+    api_url = "https://api.api-ninjas.com/v1/animals?name={}".format(name)
+    response = requests.get(
+        api_url, headers={"X-Api-Key": ""}
+    )
+    if response.status_code == requests.codes.ok:
+        return response.json()
+    else:
+        print("Error:", response.status_code, response.text)
 
 
 def read_template(template_path):
@@ -77,18 +83,11 @@ def replace_placeholder(template_content, placeholder, replacement):
 
 
 def main():
-    animals_data = load_data("animals_data.json")
-
-    available_skin_types = get_available_skin_types(animals_data)
-    print("Available skin types:")
-    for skin_type in available_skin_types:
-        print(skin_type)
-    selected_skin_type = input("\nEnter a skin type from the options above: ")
-    filtered_animals = filter_animals_by_skin_type(animals_data, selected_skin_type)
-
+    name = input("Enter a name: ")
+    animals_data = load_data(name)
     template_content = read_template("animals_template.html")
 
-    animals_info_string = generate_animals_data_string(filtered_animals)
+    animals_info_string = generate_animals_data_string(animals_data)
     updated_content = replace_placeholder(
         template_content, "__REPLACE_ANIMALS_INFO__", animals_info_string
     )
