@@ -69,13 +69,16 @@ def generate_animal_information(animal):
     return info
 
 
-def generate_animals_data_string(animals_data):
+def generate_animals_data_string(animals_data, name):
     """Generate string with all animals information"""
     output = ""
-    for animal in animals_data:
-        output += generate_animal_information(animal)
-    return output
+    if animals_data:
+        for animal in animals_data:
+            output += generate_animal_information(animal)
 
+    else:
+        output += f"<h2>The animal '{name}' doesn't exist.</h2>"
+    return output
 
 def replace_placeholder(template_content, placeholder, replacement):
     """Replace placeholder in template with the given replacement"""
@@ -85,9 +88,11 @@ def replace_placeholder(template_content, placeholder, replacement):
 def main():
     name = input("Enter a name: ")
     animals_data = load_data(name)
+
     template_content = read_template("animals_template.html")
 
-    animals_info_string = generate_animals_data_string(animals_data)
+    animals_info_string = generate_animals_data_string(animals_data, name)
+    print(animals_info_string)
     updated_content = replace_placeholder(
         template_content, "__REPLACE_ANIMALS_INFO__", animals_info_string
     )
