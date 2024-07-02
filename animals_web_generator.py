@@ -1,16 +1,10 @@
 import json
-import requests
+from data_fetcher import fetch_data
 
-
-def load_data(name):
-    api_url = "https://api.api-ninjas.com/v1/animals?name={}".format(name)
-    response = requests.get(
-        api_url, headers={"X-Api-Key": ""}
-    )
-    if response.status_code == requests.codes.ok:
-        return response.json()
-    else:
-        print("Error:", response.status_code, response.text)
+def load_data(file_path):
+    """Loads a JSON file"""
+    with open(file_path, "r") as handle:
+        return json.load(handle)
 
 
 def read_template(template_path):
@@ -69,16 +63,13 @@ def generate_animal_information(animal):
     return info
 
 
-def generate_animals_data_string(animals_data, name):
+def generate_animals_data_string(animals_data):
     """Generate string with all animals information"""
     output = ""
-    if animals_data:
-        for animal in animals_data:
-            output += generate_animal_information(animal)
-
-    else:
-        output += f"<h2>The animal '{name}' doesn't exist.</h2>"
+    for animal in animals_data:
+        output += generate_animal_information(animal)
     return output
+
 
 def replace_placeholder(template_content, placeholder, replacement):
     """Replace placeholder in template with the given replacement"""
@@ -86,13 +77,13 @@ def replace_placeholder(template_content, placeholder, replacement):
 
 
 def main():
-    name = input("Enter a name: ")
-    animals_data = load_data(name)
+    animal_name = input("Enter an animal: ")
+
+    animals_data = fetch_data(animal_name)
 
     template_content = read_template("animals_template.html")
 
-    animals_info_string = generate_animals_data_string(animals_data, name)
-    print(animals_info_string)
+    animals_info_string = generate_animals_data_string(animals_data)
     updated_content = replace_placeholder(
         template_content, "__REPLACE_ANIMALS_INFO__", animals_info_string
     )
