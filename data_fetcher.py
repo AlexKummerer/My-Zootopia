@@ -32,3 +32,4 @@ def fetch_data(animal_name):
         return response.json()
     else:
         print("Error:", response.status_code, response.text)
+        return []

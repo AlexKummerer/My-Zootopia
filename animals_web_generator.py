@@ -1,6 +1,7 @@
 import json
 from data_fetcher import fetch_data
 
+
 def load_data(file_path):
     """Loads a JSON file"""
     with open(file_path, "r") as handle:
@@ -63,11 +64,14 @@ def generate_animal_information(animal):
     return info
 
 
-def generate_animals_data_string(animals_data):
+def generate_animals_data_string(animals_data, animal_name):
     """Generate string with all animals information"""
     output = ""
-    for animal in animals_data:
-        output += generate_animal_information(animal)
+    if animals_data:
+        for animal in animals_data:
+            output += generate_animal_information(animal)
+    else:
+        output += f"<h2>The animal '{animal_name}' doesn't exist.</h2>"
     return output
 
 
@@ -81,9 +85,20 @@ def main():
 
     animals_data = fetch_data(animal_name)
 
+    if animals_data:
+        available_skin_types = get_available_skin_types(animals_data)
+        print("Available skin types:")
+        for skin_type in available_skin_types:
+            print(skin_type)
+
+        selected_skin_type = input("\nEnter a skin type from the options above: ")
+        filtered_animals = filter_animals_by_skin_type(animals_data, selected_skin_type)
+    else:
+        filtered_animals = []
+
     template_content = read_template("animals_template.html")
 
-    animals_info_string = generate_animals_data_string(animals_data)
+    animals_info_string = generate_animals_data_string(filtered_animals, animal_name)
     updated_content = replace_placeholder(
         template_content, "__REPLACE_ANIMALS_INFO__", animals_info_string
     )
